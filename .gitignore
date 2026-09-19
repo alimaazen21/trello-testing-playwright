@@ -30,6 +30,9 @@ test-output/
 screenshots/
 reports/
 extent-reports/
+test-results/
+playwright-report/
+blob-report/
 
 # Logs
 *.log
@@ -38,3 +41,7 @@ extent-reports/
 # Keep config.properties out of git to prevent accidental credential commits
 # Use config.properties.example as a template instead
 src/test/resources/config.properties
+
+# Node
+node_modules/
+.env

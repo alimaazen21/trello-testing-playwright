@@ -1,99 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.trello.automation</groupId>
-    <artifactId>trello-selenium-automation</artifactId>
+    <artifactId>trello-playwright-automation</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Trello Selenium Automation</name>
-    <description>Selenium TestNG automation framework for Trello</description>
+    <name>Trello Playwright Automation</name>
+    <description>Playwright JUnit5 automation framework for Trello</description>
 
     <properties>
-        <maven.compiler.source>26</maven.compiler.source>
-        <maven.compiler.target>26</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <selenium.version>4.25.0</selenium.version>
-        <testng.version>7.10.2</testng.version>
-        <webdrivermanager.version>5.9.2</webdrivermanager.version>
-        <allure.version>2.29.1</allure.version>
+        <playwright.version>1.49.0</playwright.version>
+        <junit.version>5.11.3</junit.version>
     </properties>
 
     <dependencies>
-        <!-- Selenium WebDriver -->
+        <!-- Playwright for Java -->
         <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>${selenium.version}</version>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <version>${playwright.version}</version>
         </dependency>
 
-        <!-- TestNG -->
+        <!-- JUnit 5 API -->
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
 
-        <!-- WebDriverManager for automatic driver management -->
+        <!-- JUnit 5 Engine (needed by Surefire to run tests) -->
         <dependency>
-            <groupId>io.github.bonigarcia</groupId>
-            <artifactId>webdrivermanager</artifactId>
-            <version>${webdrivermanager.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
 
-        <!-- Allure reporting: records each TestNG result into target/allure-results -->
+        <!-- JUnit 5 Params (for @MethodSource / @CsvSource in UIUXTests) -->
         <dependency>
-            <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-testng</artifactId>
-            <version>${allure.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Maven Compiler Plugin -->
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>26</source>
-                    <target>26</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
 
-            <!-- Maven Surefire Plugin for TestNG execution -->
-            <!-- No suiteXmlFiles: Surefire auto-discovers *Tests classes, so -->
-            <!-- `mvn test -Dtest=SomeTests` and IntelliJ gutter runs behave the same. -->
+            <!-- Surefire: run JUnit 5 tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.2</version>
                 <configuration>
-                    <systemPropertyVariables>
-                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
-                    </systemPropertyVariables>
-                </configuration>
-            </plugin>
-
-            <!-- Allure Maven Plugin: turns target/allure-results into an HTML report -->
-            <!-- Run `mvn allure:report` (static site under target/site/allure-maven-plugin) -->
-            <!-- or `mvn allure:serve` (opens a live report in the browser) after `mvn test`. -->
-            <plugin>
-                <groupId>io.qameta.allure</groupId>
-                <artifactId>allure-maven</artifactId>
-                <version>2.15.2</version>
-                <configuration>
-                    <!-- allure-commandline (the report generator this plugin downloads) is versioned
-                         independently of allure-testng - it has no 2.29.1 release, only 2.29.0, so this
-                         is pinned separately rather than reusing ${allure.version}. -->
-                    <reportVersion>2.29.0</reportVersion>
-                    <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
+                    <!-- Run all *Test and *Tests classes -->
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>
